@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Вход в Famtam</title>
+    </head>
+    <body>
+        <form action="" method="POST">
+
+            {{ form.csrf_token() }}
+
+            <p>
+                {{ form.email.label() }}
+                {{ form.email() }}
+                {% for error in form.email.errors %}
+                    {{ error}}
+                {% endfor %}
+            </p>
+
+            <p>
+                {{ form.password.label() }}
+                {{ form.password() }}
+            </p>
+
+            <p>
+                {{ form.remember_me.label() }}
+                {{ form.remember_me() }}
+            </p>
+
+            <p>
+                {{ form.submit() }}
+            </p>
+
+        </form>
+    </body>
+</html>

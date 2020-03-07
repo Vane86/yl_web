@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Регистрация</title>
+    </head>
+
+    <body>
+        <form action="" method="POST">
+
+            {{ form.csrf_token() }}
+
+            <p>
+                {{ form.name.label() }}
+                {{ form.name() }}
+                {% for error in form.name.errors %}
+                    {{ error}}
+                {% endfor %}
+            </p>
+
+            <p>
+                {{ form.email.label() }}
+                {{ form.email() }}
+                {% for error in form.email.errors %}
+                    {{ error}}
+                {% endfor %}
+            </p>
+
+            <p>
+                {{ form.password.label() }}
+                {{ form.password() }}
+            </p>
+
+            <p>
+                {{ form.check_password.label() }}
+                {{ form.check_password() }}
+                {% for error in form.check_password.errors %}
+                    {{ error}}
+                {% endfor %}
+            </p>
+
+            <p>
+                {{ form.submit() }}
+            </p>
+
+            <p>
+                {{ message }}
+            </p>
+
+        </form>
+    </body>
+</html>
