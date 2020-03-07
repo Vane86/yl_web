@@ -1,9 +1,11 @@
 from sqlalchemy import Column, Integer, String
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
+
 from .db_session import ORMBase
 
 
-class User(ORMBase):
+class User(ORMBase, UserMixin):
     __tablename__ = 'users'
 
     id = Column(Integer,
