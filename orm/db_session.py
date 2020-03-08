@@ -6,10 +6,16 @@ import sqlalchemy.ext.declarative as dec
 ORMBase = dec.declarative_base()
 
 __factory = None
+global_session = None
+
+
+def create_session():
+    global __factory
+    return __factory()
 
 
 def global_init(db_file):
-    global __factory
+    global __factory, global_session
 
     if __factory:
         return
@@ -23,8 +29,4 @@ def global_init(db_file):
     from . import models
 
     ORMBase.metadata.create_all(engine)
-
-
-def create_session():
-    global __factory
-    return __factory()
+    global_session = create_session()
