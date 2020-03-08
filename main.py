@@ -80,10 +80,22 @@ def create_group():
     return render_template('private_create_group.html', form=form)
 
 
-@app.route('/join_group')
+@app.route('/join_group', methods=['GET', 'POST'])
 @login_required
 def join_group():
-    return '<h1>Войти в группу!</h1>'
+    form = forms.JoinGroupForm()
+    if form.validate_on_submit():
+        group = db_session.global_session.query(Group).filter(Group.id == int(form.id.data)).first()
+        if not group:
+            return render_template('private_join_group.html', form=form, message='Такой группы не существует!')
+        if len(group.users) == group.max_members:
+            return render_template('private_join_group.html', form=form, message='В группе достигнуто максимальное количество участников!')
+        if current_user in group.users:
+            return render_template('private_join_group.html', form=form, message='Вы уже состоите в этой группе!')
+        group.users.append(current_user)
+        db_session.global_session.commit()
+        return redirect('/private')
+    return render_template('private_join_group.html', form=form)
 
 
 app.run('localhost', 8080, debug=True)

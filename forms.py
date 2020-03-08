@@ -23,3 +23,8 @@ class CreateGroupForm(FlaskForm):
     name = StringField('Имя группы:', validators=[DataRequired()])
     max_members = IntegerField('Максимальное число участников:', validators=[DataRequired()])
     submit = SubmitField('Создать')
+
+
+class JoinGroupForm(FlaskForm):
+    id = StringField('Уникальный ID группы:', validators=[DataRequired()])
+    submit = SubmitField('Войти')
