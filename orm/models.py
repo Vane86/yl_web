@@ -1,6 +1,7 @@
-from sqlalchemy import orm, Column, Integer, String, ForeignKey, Table
+from sqlalchemy import orm, Column, Integer, String, DateTime, ForeignKey, Table
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+import datetime
 
 from .db_session import ORMBase
 
@@ -64,6 +65,7 @@ class Task(ORMBase):
     priority = Column(Integer, nullable=False)  # 0 - high, 1 - medium, 2 - low
     description = Column(String, nullable=False)
     status = Column(Integer, nullable=True, default=0)  # 0 - open, 1 - closed
+    creation_time = Column(DateTime, nullable=False, default=datetime.datetime.now)
 
     author = orm.relation('User', foreign_keys=[author_id])
     performer = orm.relation('User', foreign_keys=[performer_id])

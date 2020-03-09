@@ -15,7 +15,7 @@
     <p>Задачи: </p>
     <ul>
         {% for task in group.tasks %}
-        <li> {{ task.name }} {% if task.performer_id == current_user.id %} (вы исполнитель) {% endif %} </li>
+        <li><a href="/group/{{group.id}}/task/{{task.id}}"> {{ task.name }} {% if task.performer_id == current_user.id %} (вы исполнитель) {% endif %} </a></li>
         {% endfor %}
     </ul>
 {% endif %}

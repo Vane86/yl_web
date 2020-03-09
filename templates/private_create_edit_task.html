@@ -26,6 +26,13 @@
                 {{ form.description() }}
             </p>
 
+            {% if edit %}
+            <p>
+                {{ form.status.label() }}
+                {{ form.status() }}
+            </p>
+            {% endif %}
+
             <p>
                 {{ form.submit() }}
             </p>

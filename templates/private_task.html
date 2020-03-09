@@ -1,0 +1,19 @@
+{% extends "private_base.html" %}
+
+{% block content %}
+
+    <p>
+        {{task.name}} <br>
+        Автор: {{task.author.name}} (id: {{task.author.id}})<br>
+        Испольнитель: {{task.performer.name}} (id: {{task.performer.id}}) <br>
+        Приоритет: {{['Высокий', 'Средний', 'Низкий'][task.priority]}} <br>
+        Описание: {{task.description}} <br>
+        Статус: {{['На исполнении', 'Выполнено'][task.status]}} <br>
+        Дата создания: {{task.creation_time.strftime('%d.%m.%y %H:%M:%S')}}
+
+    </p>
+    {% if task.author_id == current_user.id %}
+    <a href="../edit_task/{{task.id}}">Редактировать</a>
+    {% endif %}
+
+{% endblock %}

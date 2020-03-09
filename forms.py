@@ -31,8 +31,9 @@ class JoinGroupForm(FlaskForm):
 
 
 class CreateTaskForm(FlaskForm):
-    name = StringField('Название:')
-    performer_id = SelectField('Исполнитель:', coerce=int)  # choices must be filled in creation time!
+    name = StringField('Название:', validators=[DataRequired()])
+    performer_id = SelectField('Исполнитель:', coerce=int, validators=[DataRequired()])  # choices must be filled in creation time!
     priority = SelectField('Приоритет:', choices=[(0, 'Высокий'), (1, 'Средний'), (2, 'Низкий')], coerce=int, default=1)
-    description = TextAreaField('Описание:')
-    submit = SubmitField('Создать')
+    description = TextAreaField('Описание:', validators=[DataRequired()])
+    status = SelectField('Статус:', choices=[(0, 'Требует выполнения'), (1, 'Выполнено')], coerce=int, default=0)
+    submit = SubmitField('Применить')

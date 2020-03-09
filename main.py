@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, abort
+from flask import Flask, render_template, redirect, abort, request
 from sqlalchemy.exc import IntegrityError
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
@@ -123,7 +123,45 @@ def create_task_page(group_id):
         db_session.global_session.add(task)
         db_session.global_session.commit()
         return redirect('/private')
-    return render_template('private_create_task.html', group=group, form=form)
+    return render_template('private_create_edit_task.html', group=group, form=form, edit=False)
+
+
+@app.route('/group/<int:group_id>/task/<int:task_id>')
+@login_required
+def task_page(group_id, task_id):
+    group = db_session.global_session.query(Group).filter(Group.id == group_id).first()
+    if not group or task_id not in set(task.id for task in group.tasks):
+        abort(404)
+    task = db_session.global_session.query(Task).filter(Task.id == task_id).first()
+    return render_template('private_task.html', group=group, task=task)
+
+
+@app.route('/group/<int:group_id>/edit_task/<int:task_id>', methods=['GET', 'POST'])
+@login_required
+def edit_task_page(group_id, task_id):
+    group = db_session.global_session.query(Group).filter(Group.id == group_id).first()
+    if not group or task_id not in set(task.id for task in group.tasks):
+        abort(404)
+
+    task = db_session.global_session.query(Task).filter(Task.id == task_id).first()
+    if current_user.id != task.author_id:
+        abort(403)
+    form = forms.CreateTaskForm()
+    form.performer_id.choices = [(user.id, f'{user.name} (id: {user.id})') for user in group.users]
+    if request.method == 'GET':
+        form.name.data = task.name
+        form.performer_id.data = task.performer_id
+        form.priority.data = task.priority
+        form.description.data = task.description
+    if form.validate_on_submit():
+        task.name = form.name.data
+        task.performer_id = form.performer_id.data
+        task.priority = form.priority.data
+        task.description = form.description.data
+        task.status = form.status.data
+        db_session.global_session.commit()
+        return redirect('/private')
+    return render_template('private_create_edit_task.html', group=group, form=form, edit=True)
 
 
 app.run('localhost', 8080, debug=True)
