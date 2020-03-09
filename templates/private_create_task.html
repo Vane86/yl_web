@@ -1,0 +1,37 @@
+{% extends "private_base.html" %}
+
+{% block content %}
+
+    <form action="" method="POST">
+
+            {{ form.csrf_token() }}
+
+            <p>
+                {{ form.name.label() }}
+                {{ form.name() }}
+            </p>
+
+            <p>
+                {{ form.performer_id.label() }}
+                {{ form.performer_id() }}
+            </p>
+
+            <p>
+                {{ form.priority.label() }}
+                {{ form.priority() }}
+            </p>
+
+            <p>
+                {{ form.description.label() }}
+                {{ form.description() }}
+            </p>
+
+            <p>
+                {{ form.submit() }}
+            </p>
+
+            <p>{{ message }}</p>
+
+        </form>
+
+{% endblock %}

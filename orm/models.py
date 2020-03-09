@@ -45,8 +45,34 @@ class Group(ORMBase):
 
     admin = orm.relation('User')
     users = orm.relation('User', secondary='group2user', back_populates='groups')
+    # tasks - list of Task instances
 
     def __init__(self, name, max_members, admin_id):
         self.name = name
         self.max_members = max_members
         self.admin_id = admin_id
+
+
+class Task(ORMBase):
+    __tablename__ = 'tasks'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String, nullable=False)
+    author_id = Column(Integer, ForeignKey('users.id'))
+    performer_id = Column(Integer, ForeignKey('users.id'))
+    group_id = Column(Integer, ForeignKey('groups.id'))
+    priority = Column(Integer, nullable=False)  # 0 - high, 1 - medium, 2 - low
+    description = Column(String, nullable=False)
+    status = Column(Integer, nullable=True, default=0)  # 0 - open, 1 - closed
+
+    author = orm.relation('User', foreign_keys=[author_id])
+    performer = orm.relation('User', foreign_keys=[performer_id])
+    group = orm.relation('Group', backref='tasks')
+
+    def __init__(self, name, author_id, performer_id, group_id, priority, description):
+        self.name = name
+        self.author_id = author_id
+        self.performer_id = performer_id
+        self.group_id = group_id
+        self.priority = priority
+        self.description = description

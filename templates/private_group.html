@@ -1,0 +1,25 @@
+{% extends "private_base.html" %}
+
+{% block content %}
+
+<p>Участники: </p>
+<ul>
+    {% for user in group.users %}
+    <li> {{ user.name }} {% if user.id == group.admin_id %} (администратор) {% endif %} </li>
+    {% endfor %}
+</ul>
+
+{% if len(group.tasks) == 0 %}
+    <p>В этой группе нет задач</p>
+{% else %}
+    <p>Задачи: </p>
+    <ul>
+        {% for task in group.tasks %}
+        <li> {{ task.name }} {% if task.performer_id == current_user.id %} (вы исполнитель) {% endif %} </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<a href="/group/{{group.id}}/create_task">Создать задачу</a>
+
+{% endblock %}

@@ -1,8 +1,8 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, abort
 from sqlalchemy.exc import IntegrityError
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
-from orm.models import User, Group
+from orm.models import User, Group, Task
 import forms
 
 
@@ -68,7 +68,7 @@ def private_page():
 
 @app.route('/create_group', methods=['GET', 'POST'])
 @login_required
-def create_group():
+def create_group_page():
     form = forms.CreateGroupForm()
     if form.validate_on_submit():
         group = Group(form.name.data,
@@ -82,7 +82,7 @@ def create_group():
 
 @app.route('/join_group', methods=['GET', 'POST'])
 @login_required
-def join_group():
+def join_group_page():
     form = forms.JoinGroupForm()
     if form.validate_on_submit():
         group = db_session.global_session.query(Group).filter(Group.id == int(form.id.data)).first()
@@ -96,6 +96,34 @@ def join_group():
         db_session.global_session.commit()
         return redirect('/private')
     return render_template('private_join_group.html', form=form)
+
+
+@app.route('/group/<int:group_id>')
+@login_required
+def group_page(group_id):
+    group = db_session.global_session.query(Group).filter(Group.id == group_id).first()
+    if not group:
+        abort(404)
+    return render_template('private_group.html', group=group, len=len)
+
+
+@app.route('/group/<int:group_id>/create_task', methods=['GET', 'POST'])
+@login_required
+def create_task_page(group_id):
+    group = db_session.global_session.query(Group).filter(Group.id == group_id).first()
+    if not group:
+        abort(404)
+    form = forms.CreateTaskForm()
+    form.performer_id.choices = [(user.id, f'{user.name} (id: {user.id})') for user in group.users]
+    if form.validate_on_submit():
+        # TODO:
+        # Check all possible inputs
+        task = Task(name=form.name.data, author_id=current_user.id, performer_id=form.performer_id.data,
+                    group_id=group_id, priority=form.priority.data, description=form.description.data)
+        db_session.global_session.add(task)
+        db_session.global_session.commit()
+        return redirect('/private')
+    return render_template('private_create_task.html', group=group, form=form)
 
 
 app.run('localhost', 8080, debug=True)

@@ -8,8 +8,9 @@
     {% endif %}
 
     {% for group in current_user.groups %}
-        <p> {{ group.name }} </p>
+        <p><a href="/group/{{ group.id }}"> {{ group.name }} </a></p>
         <p> Пользователей: {{ len(group.users) }} </p>
+        <p> Задач: {{ len(group.tasks) }} </p>
         {% if group.admin_id == current_user.id %}
             <p> Вы являетесь администратором </p>
         {% endif %}

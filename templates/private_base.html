@@ -6,7 +6,8 @@
     </head>
     <body>
         <div>
-            {{ current_user.name }}
+            <a href="/login">{{ current_user.name }}</a>
+            <a href="/private">Главная</a>
         </div>
 
         {% block content %}
