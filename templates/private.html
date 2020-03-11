@@ -1,22 +1,36 @@
 {% extends "private_base.html" %}
 
+{% block private_navbar %}
+    <li class="nav-item">
+        <a class="nav-link" href="/create_group">Создать группу</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/join_group">Присоединиться к группе</a>
+    </li>
+{% endblock %}
+
 {% block content %}
 
-    <h1>Привет!!</h1>
     {% if not current_user.groups %}
-        <p> Вы не состоите ни в одной группе. </p>
+        <div class="alert alert-info">
+            Вы не состоите ни в одной группе.
+        </div>
     {% endif %}
 
-    {% for group in current_user.groups %}
-        <p><a href="/group/{{ group.id }}"> {{ group.name }} </a></p>
-        <p> Пользователей: {{ len(group.users) }} </p>
-        <p> Задач: {{ len(group.tasks) }} </p>
-        {% if group.admin_id == current_user.id %}
-            <p> Вы являетесь администратором </p>
-        {% endif %}
-    {% endfor %}
-
-    <a href="/create_group">Создать группу</a> <br/>
-    <a href="/join_group">Присоединиться к группе</a>
+    <div class="row" style="margin: 10px">
+        {% for group in current_user.groups %}
+            <div class="card-body bg-light col-md-3 border border-primary" style="border-radius: 5px; margin: 5px">
+                <h5 class="card-title">{{ group.name }} (ID: {{ group.id }})</h5>
+                <p class="card-text">
+                    Пользователей: {{ len(group.users) }} <br>
+                    Задач: {{ len(group.tasks) }}
+                    {% if group.admin_id == current_user.id %}
+                        <p>Вы являетесь администратором</p>
+                    {% endif %}
+                </p>
+                <a href="/group/{{ group.id }}" class="btn btn-primary">Войти</a>
+            </div>
+        {% endfor %}
+    </div>
 
 {% endblock %}

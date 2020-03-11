@@ -1,40 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Вход в Famtam</title>
-    </head>
-    <body>
-        <form action="" method="POST">
+{% extends "base.html" %}
 
-            {{ form.csrf_token() }}
+{% block base_content %}
 
-            <p>
-                {{ form.email.label() }}
-                {{ form.email() }}
+    <form action="" method="POST">
+
+        {{ form.csrf_token() }}
+
+        <div class="container border border-primary" style="background: #D0D0FF; border-radius: 10px; margin-top: 50px; padding: 10px">
+            <div class="form-row">
+                <div class="col">
+                {{ form.email(class="form-control", placeholder=form.email.label.text) }}
                 {% for error in form.email.errors %}
-                    {{ error}}
+                    <div class="alert alert-danger">{{error}}</div>
                 {% endfor %}
-            </p>
+                </div>
+            </div>
 
-            <p>
-                {{ form.password.label() }}
-                {{ form.password() }}
-            </p>
+            <div class="form-row">
+                <div class="col">
+                    {{ form.password(class="form-control", placeholder=form.password.label.text) }}
+                </div>
+            </div>
 
-            <p>
-                {{ form.remember_me.label() }}
-                {{ form.remember_me() }}
-            </p>
+            <div class="form-row">
+                <div class="col">
+                    <div class="from-check">
+                        {{ form.remember_me(class="") }}
+                        {{ form.remember_me.label(class="form-check-label") }}
+                    </div>
+                </div>
+            </div>
 
-            <p>
-                {{ form.submit() }}
-            </p>
+            <div class="form-row">
+                <div class="col">
+                    {{ form.submit(class="btn btn-primary btn-block") }}
+                </div>
+            </div>
 
-            <p><a href="/register">Регистрация</a></p>
+            <div class="form-row">
+                <div class="col">
+                    <a href="/register" class="btn btn-secondary btn-block">Регистрация</a>
+                </div>
+            </div>
 
-            <p>{{ message }}</p>
+            {% if message %}
+                <div class="alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+            {% endif %}
+        </div>
 
-        </form>
-    </body>
-</html>
+    </form>
+
+{% endblock %}

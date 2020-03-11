@@ -38,7 +38,7 @@ def login_page():
         else:
             login_user(user, remember=form.remember_me.data)
             return redirect('/private')
-    return render_template('login.html', form=form, message=message)
+    return render_template('login.html', title='Вход в Famtam', form=form, message=message)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -52,11 +52,12 @@ def registration_page():
             db_session.global_session.add(user)
             db_session.global_session.commit()
         except IntegrityError:
-            return render_template('register.html', form=form, message='Пользователь с таким E-mail уже существует!')
-        except Exception:
-            return render_template('register.html', form=form, message='Произошла неизвестная ошибка.')
+            return render_template('register.html', title='Регистрация', form=form, message='Пользователь с таким E-mail уже существует!')
+        except Exception as e:
+            print(e)
+            return render_template('register.html', title='Регистрация', form=form, message='Произошла неизвестная ошибка.')
         return redirect('/login')
-    return render_template('register.html', form=form)
+    return render_template('register.html', title='Регистрация', form=form)
 
 
 @app.route('/')
@@ -77,7 +78,7 @@ def create_group_page():
         group.users.append(current_user)
         db_session.global_session.commit()
         return redirect('/private')
-    return render_template('private_create_group.html', form=form)
+    return render_template('private_create_group.html', title='Создание группы', form=form)
 
 
 @app.route('/join_group', methods=['GET', 'POST'])
@@ -85,17 +86,20 @@ def create_group_page():
 def join_group_page():
     form = forms.JoinGroupForm()
     if form.validate_on_submit():
+        if not form.id.data.isdigit():
+            return render_template('private_join_group.html', title='Присоединиться к группе', form=form, message='ID должен быть целым числом!')
         group = db_session.global_session.query(Group).filter(Group.id == int(form.id.data)).first()
         if not group:
-            return render_template('private_join_group.html', form=form, message='Такой группы не существует!')
+            return render_template('private_join_group.html', title='Присоединиться к группе', form=form, message='Такой группы не существует!')
         if len(group.users) == group.max_members:
-            return render_template('private_join_group.html', form=form, message='В группе достигнуто максимальное количество участников!')
+            return render_template('private_join_group.html', title='Присоединиться к группе', form=form, message='В группе достигнуто максимальное количество участников!')
         if current_user in group.users:
-            return render_template('private_join_group.html', form=form, message='Вы уже состоите в этой группе!')
+            return render_template('private_join_group.html', title='Присоединиться к группе', form=form, message='Вы уже состоите в этой группе!')
         group.users.append(current_user)
         db_session.global_session.commit()
         return redirect('/private')
-    return render_template('private_join_group.html', form=form)
+    print(form.errors)
+    return render_template('private_join_group.html', title='Присоединиться к группе', form=form)
 
 
 @app.route('/group/<int:group_id>')
@@ -104,7 +108,7 @@ def group_page(group_id):
     group = db_session.global_session.query(Group).filter(Group.id == group_id).first()
     if not group:
         abort(404)
-    return render_template('private_group.html', group=group, len=len)
+    return render_template('private_group.html', title=group.name, group=group, len=len)
 
 
 @app.route('/group/<int:group_id>/create_task', methods=['GET', 'POST'])
@@ -123,7 +127,7 @@ def create_task_page(group_id):
         db_session.global_session.add(task)
         db_session.global_session.commit()
         return redirect('/private')
-    return render_template('private_create_edit_task.html', group=group, form=form, edit=False)
+    return render_template('private_create_edit_task.html', title='Создание задачи', group=group, form=form, edit=False)
 
 
 @app.route('/group/<int:group_id>/task/<int:task_id>')
@@ -133,7 +137,7 @@ def task_page(group_id, task_id):
     if not group or task_id not in set(task.id for task in group.tasks):
         abort(404)
     task = db_session.global_session.query(Task).filter(Task.id == task_id).first()
-    return render_template('private_task.html', group=group, task=task)
+    return render_template('private_task.html', title=f'Задача: {task.name}', group=group, task=task)
 
 
 @app.route('/group/<int:group_id>/edit_task/<int:task_id>', methods=['GET', 'POST'])
@@ -160,8 +164,8 @@ def edit_task_page(group_id, task_id):
         task.description = form.description.data
         task.status = form.status.data
         db_session.global_session.commit()
-        return redirect('/private')
-    return render_template('private_create_edit_task.html', group=group, form=form, edit=True)
+        return redirect(f'/group/{group_id}')
+    return render_template('private_create_edit_task.html', title='Редактирование задачи', group=group, form=form, edit=True)
 
 
 app.run('localhost', 8080, debug=True)

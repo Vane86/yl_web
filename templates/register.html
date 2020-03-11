@@ -1,50 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Регистрация</title>
-    </head>
+{% extends "base.html" %}
 
-    <body>
-        <form action="" method="POST">
+{% block base_content %}
 
-            {{ form.csrf_token() }}
+    <form action="" method="POST">
 
-            <p>
-                {{ form.name.label() }}
-                {{ form.name() }}
-                {% for error in form.name.errors %}
-                    {{ error}}
-                {% endfor %}
-            </p>
+        {{ form.csrf_token() }}
 
-            <p>
-                {{ form.email.label() }}
-                {{ form.email() }}
-                {% for error in form.email.errors %}
-                    {{ error}}
-                {% endfor %}
-            </p>
+        <div class="container border border-primary" style="background: #D0D0FF; border-radius: 10px; margin-top: 50px; padding: 10px">
+            <div class="form-row">
+                <div class="col">
+                    {{ form.name(class="form-control", placeholder=form.name.label.text) }}
+                    {% for error in form.name.errors %}
+                        <div class="alert alert-danger">{{error}}</div>
+                    {% endfor %}
+                </div>
+            </div>
 
-            <p>
-                {{ form.password.label() }}
-                {{ form.password() }}
-            </p>
+            <div class="form-row">
+                <div class="col">
+                    {{ form.email(class="form-control", placeholder=form.email.label.text) }}
+                    {% for error in form.email.errors %}
+                        <div class="alert alert-danger">{{error}}</div>
+                    {% endfor %}
+                </div>
+            </div>
 
-            <p>
-                {{ form.check_password.label() }}
-                {{ form.check_password() }}
-                {% for error in form.check_password.errors %}
-                    {{ error}}
-                {% endfor %}
-            </p>
+            <div class="form-row">
+                <div class="col">
+                    {{ form.password(class="form-control", placeholder=form.password.label.text) }}
+                </div>
+            </div>
 
-            <p>
-                {{ form.submit() }}
-            </p>
+            <div class="form-row">
+                <div class="col">
+                    {{ form.check_password(class="form-control", placeholder=form.check_password.label.text) }}
+                    {% for error in form.check_password.errors %}
+                        <div class="alert alert-danger">{{error}}</div>
+                    {% endfor %}
+                </div>
+            </div>
 
-            <p>{{ message }}</p>
+            <div class="form-row">
+                <div class="col">
+                    {{ form.submit(class="btn btn-primary btn-block") }}
+                </div>
+            </div>
 
-        </form>
-    </body>
-</html>
+            {% if message %}
+                <div class="alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+            {% endif %}
+        </div>
+
+    </form>
+
+{% endblock %}

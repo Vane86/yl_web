@@ -53,6 +53,9 @@ class Group(ORMBase):
         self.max_members = max_members
         self.admin_id = admin_id
 
+    def get_active_tasks(self):
+        return [task for task in self.tasks if task.status == 0]
+
 
 class Task(ORMBase):
     __tablename__ = 'tasks'

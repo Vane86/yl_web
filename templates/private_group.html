@@ -2,24 +2,50 @@
 
 {% block content %}
 
-<p>Участники: </p>
-<ul>
-    {% for user in group.users %}
-    <li> {{ user.name }} {% if user.id == group.admin_id %} (администратор) {% endif %} </li>
-    {% endfor %}
-</ul>
+<div class="row" style="margin: 10px">
+    {% set active_tasks = group.get_active_tasks() %}
+    <div class="container col-9">
+        <div class="row">
+            {% for task in active_tasks %}
+                <div class="card-body bg-light col-md-3 border border-primary" style="border-radius: 5px; margin: 5px">
+                    <h5 class="card-title">{{ task.name }}</h5>
+                    <p class="card-text">
+                        Создатель: {{ task.author.name }} <br>
+                        Исполнитель: {% if group.performer_id == current_user.id %} Вы {% else %} {{ task.performer.name }} {% endif %} <br>
+                        Дата создания: {{ task.creation_time.strftime('%d.%m.%y') }}
+                    </p>
+                    <a href="/group/{{ group.id }}/task/{{task.id}}" class="btn btn-primary">Детали</a>
+                </div>
+            {% endfor %}
 
-{% if len(group.tasks) == 0 %}
-    <p>В этой группе нет задач</p>
-{% else %}
-    <p>Задачи: </p>
-    <ul>
-        {% for task in group.tasks %}
-        <li><a href="/group/{{group.id}}/task/{{task.id}}"> {{ task.name }} {% if task.performer_id == current_user.id %} (вы исполнитель) {% endif %} </a></li>
-        {% endfor %}
-    </ul>
-{% endif %}
+            <div class="card-body bg-light col-md-3 border border-primary" style="border-radius: 5px; margin: 5px">
+                <h5 class="card-title">Создать новую задачу</h5>
+                <p class="card-text">
+                    {% if len(active_tasks) == 0 %}
+                        В группе пока нет задач <br>
+                    {% endif %}
+                    Чтобы создать задачу, нажмите кнопку ниже:
+                </p>
+                <a href="/group/{{group.id}}/create_task" class="btn btn-primary">Создать задачу</a>
+            </div>
+        </div>
+    </div>
 
-<a href="/group/{{group.id}}/create_task">Создать задачу</a>
+    <div class="container col-3">
+        <div class="card bg-light">
+            <div class="card-header">Участники</div>
+            <div class="card-body">
+                <div class="card-text">
+                    <ul class="list-group">
+                        {% for user in group.users %}
+                        <li class="list-group-item">{{ user.name }} {% if user.id == group.admin_id %} (администратор) {% endif %}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
 
 {% endblock %}

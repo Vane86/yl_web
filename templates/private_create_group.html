@@ -4,24 +4,37 @@
 
     <form action="" method="POST">
 
-            {{ form.csrf_token() }}
+        {{ form.csrf_token() }}
 
-            <p>
-                {{ form.name.label() }}
-                {{ form.name() }}
-            </p>
+        <div class="container border border-primary" style="background: #D0D0FF; border-radius: 10px; margin-top: 50px; padding: 10px">
+            <div class="form-row">
+                <div class="col">
+                    {{ form.name(class="form-control", placeholder=form.name.label.text) }}
+                </div>
+            </div>
 
-            <p>
-                {{ form.max_members.label() }}
-                {{ form.max_members() }}
-            </p>
+            <div class="form-row">
+                <div class="col">
+                    {{ form.max_members(class="form-control", placeholder=form.max_members.label.text) }}
+                    {% for error in form.max_members.errors %}
+                        <div class="alert alert-danger">{{error}}</div>
+                    {% endfor %}
+                </div>
+            </div>
 
-            <p>
-                {{ form.submit() }}
-            </p>
+            <div class="form-row">
+                <div class="col">
+                    {{form.submit(class="btn btn-primary")}}
+                </div>
+            </div>
 
-            <p>{{ message }}</p>
+            {% if message %}
+                <div class="alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+            {% endif %}
+        </div>
 
-        </form>
+    </form>
 
 {% endblock %}

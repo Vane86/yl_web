@@ -4,19 +4,27 @@
 
     <form action="" method="POST">
 
-            {{ form.csrf_token() }}
+        {{ form.csrf_token() }}
 
-            <p>
-                {{ form.id.label() }}
-                {{ form.id() }}
-            </p>
+        <div class="container border border-primary" style="background: #D0D0FF; border-radius: 10px; margin-top: 50px; padding: 10px">
+            <div class="form-row">
+                <div class="col">
+                    {{ form.id(class="form-control", placeholder=form.id.label.text) }}
+                </div>
+            </div>
 
-            <p>
-                {{ form.submit() }}
-            </p>
+            <div class="form-row">
+                <div class="col">
+                    {{form.submit(class="btn btn-primary")}}
+                </div>
+            </div>
 
-            <p>{{ message }}</p>
-
-        </form>
+            {% if message %}
+                <div class="alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+            {% endif %}
+        </div>
+    </form>
 
 {% endblock %}

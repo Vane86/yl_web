@@ -2,18 +2,19 @@
 
 {% block content %}
 
-    <p>
-        {{task.name}} <br>
-        Автор: {{task.author.name}} (id: {{task.author.id}})<br>
-        Испольнитель: {{task.performer.name}} (id: {{task.performer.id}}) <br>
-        Приоритет: {{['Высокий', 'Средний', 'Низкий'][task.priority]}} <br>
-        Описание: {{task.description}} <br>
-        Статус: {{['На исполнении', 'Выполнено'][task.status]}} <br>
-        Дата создания: {{task.creation_time.strftime('%d.%m.%y %H:%M:%S')}}
-
-    </p>
-    {% if task.author_id == current_user.id %}
-    <a href="../edit_task/{{task.id}}">Редактировать</a>
-    {% endif %}
+   <div class="border border-primary" style="margin: 20px; border-radius: 5px">
+       <ul class="list-group">
+           <li class="list-group-item">Название: {{task.name}}</li>
+           <li class="list-group-item">Автор: {{task.author.name}} (id: {{task.author.id}})</li>
+           <li class="list-group-item">Испольнитель: {{task.performer.name}} (id: {{task.performer.id}})</li>
+           <li class="list-group-item">Приоритет: {{['Высокий', 'Средний', 'Низкий'][task.priority]}}</li>
+           <li class="list-group-item">Описание: {{task.description}}</li>
+           <li class="list-group-item">Статус: {{['На исполнении', 'Выполнено'][task.status]}}</li>
+           <li class="list-group-item">Дата создания: {{task.creation_time.strftime('%d.%m.%y %H:%M:%S')}}
+       </ul>
+       {% if task.author_id == current_user.id %}
+            <a href="../edit_task/{{task.id}}" class="btn btn-primary btn-block">Редактировать</a>
+        {% endif %}
+    </div>
 
 {% endblock %}

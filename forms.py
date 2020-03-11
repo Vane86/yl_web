@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, PasswordField, BooleanField, SelectField, TextAreaField, SubmitField
-from wtforms.validators import DataRequired, Email, EqualTo
+from wtforms.validators import DataRequired, Email, EqualTo, NumberRange
 
 
 class RegistrationForm(FlaskForm):
@@ -21,12 +21,12 @@ class LoginForm(FlaskForm):
 
 class CreateGroupForm(FlaskForm):
     name = StringField('Имя группы:', validators=[DataRequired()])
-    max_members = IntegerField('Максимальное число участников:', validators=[DataRequired()])
+    max_members = IntegerField('Максимальное число участников:', validators=[DataRequired(), NumberRange(2, 50, 'Число должно быть от 2 до 50!')])
     submit = SubmitField('Создать')
 
 
 class JoinGroupForm(FlaskForm):
-    id = IntegerField('Уникальный ID группы:', validators=[DataRequired()])
+    id = StringField('Уникальный ID группы:', validators=[DataRequired()])
     submit = SubmitField('Войти')
 
 

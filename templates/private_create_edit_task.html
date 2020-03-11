@@ -4,41 +4,73 @@
 
     <form action="" method="POST">
 
-            {{ form.csrf_token() }}
+        {{ form.csrf_token() }}
 
-            <p>
-                {{ form.name.label() }}
-                {{ form.name() }}
-            </p>
+        <div class="container border border-primary" style="background: #D0D0FF; border-radius: 10px; margin-top: 50px; padding: 10px">
+            <div class="form-row">
+                <div class="col">
+                {{ form.name(class="form-control", placeholder=form.name.label.text) }}
+                {% for error in form.name.errors %}
+                    <div class="alert alert-danger">{{error}}</div>
+                {% endfor %}
+                </div>
+            </div>
 
-            <p>
-                {{ form.performer_id.label() }}
-                {{ form.performer_id() }}
-            </p>
+            <div class="form-row">
+                <div class="col">
+                    {{ form.performer_id.label(class='form-label') }}
+                    {{ form.performer_id(class="form-control", placeholder=form.performer_id.label.text) }}
+                    {% for error in form.performer_id.errors %}
+                        <div class="alert alert-danger">{{error}}</div>
+                    {% endfor %}
+                </div>
+            </div>
 
-            <p>
-                {{ form.priority.label() }}
-                {{ form.priority() }}
-            </p>
+            <div class="form-row">
+                <div class="col">
+                    {{ form.priority.label(class='form-label') }}
+                    {{ form.priority(class="form-control") }}
+                    {% for error in form.priority.errors %}
+                        <div class="alert alert-danger">{{error}}</div>
+                    {% endfor %}
+                </div>
+            </div>
 
-            <p>
-                {{ form.description.label() }}
-                {{ form.description() }}
-            </p>
+            <div class="form-row">
+                <div class="col">
+                    {{ form.description(class="form-control", placeholder=form.description.label.text) }}
+                    {% for error in form.description.errors %}
+                        <div class="alert alert-danger">{{error}}</div>
+                    {% endfor %}
+                </div>
+            </div>
 
             {% if edit %}
-            <p>
-                {{ form.status.label() }}
-                {{ form.status() }}
-            </p>
+            <div class="form-row">
+                <div class="col">
+                    {{ form.status.label(class='form-label') }}
+                    {{ form.status(class="form-control") }}
+                    {% for error in form.status.errors %}
+                        <div class="alert alert-danger">{{error}}</div>
+                    {% endfor %}
+                </div>
+            </div>
             {% endif %}
 
-            <p>
-                {{ form.submit() }}
-            </p>
+            <div class="form-row">
+                <div class="col">
+                    {{ form.submit(class="btn btn-primary btn-block", value='Изменить' if edit else 'Создать') }}
+                </div>
+            </div>
 
-            <p>{{ message }}</p>
+            {% if message %}
+                <div class="alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+            {% endif %}
 
-        </form>
+        </div>
+
+    </form>
 
 {% endblock %}
