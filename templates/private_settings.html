@@ -1,0 +1,58 @@
+{% extends "private_base.html" %}
+
+{% block content %}
+
+    <form action="" method="POST">
+
+        {{ form.csrf_token() }}
+
+        <div class="container border border-primary" style="background: #D0D0FF; border-radius: 10px; margin-top: 50px; padding: 10px">
+            <div class="form-row">
+                <div class="col">
+                    {{ form.name(class="form-control", placeholder=form.name.label.text) }}
+                    {% for error in form.name.errors %}
+                        <div class="alert alert-danger">{{error}}</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col">
+                    {{ form.email(class="form-control", placeholder=form.email.label.text) }}
+                    {% for error in form.email.errors %}
+                        <div class="alert alert-danger">{{error}}</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col">
+                    {{ form.password(class="form-control", placeholder=form.password.label.text) }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col">
+                    {{ form.check_password(class="form-control", placeholder=form.check_password.label.text) }}
+                    {% for error in form.check_password.errors %}
+                        <div class="alert alert-danger">{{error}}</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col">
+                    {{ form.submit(class="btn btn-primary btn-block") }}
+                </div>
+            </div>
+
+            {% if message %}
+                <div class="alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+            {% endif %}
+        </div>
+
+    </form>
+
+{% endblock %}

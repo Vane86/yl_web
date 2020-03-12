@@ -183,4 +183,23 @@ def finish_task(group_id, task_id):
     return redirect(f'/group/{group_id}')
 
 
+@app.route('/private/settings', methods=['GET', 'POST'])
+@login_required
+def private_settings_page():
+    form = forms.SettingsForm()
+    if request.method == 'GET':
+        form.name.data = current_user.name
+        form.email.data = current_user.email
+    if form.validate_on_submit():
+        if form.name.data:
+            current_user.name = form.name.data
+        if form.email.data:
+            current_user.email = form.email.data
+        if form.password.data:
+            current_user.set_password(form.password.data)
+        db_session.global_session.commit()
+        return redirect('/private')
+    return render_template('private_settings.html', title='Настройки', form=form)
+
+
 app.run('localhost', 8080, debug=True)

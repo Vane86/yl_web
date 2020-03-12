@@ -15,6 +15,15 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Зарегистрироваться')
 
 
+class SettingsForm(FlaskForm):
+    name = StringField('Имя:')
+    email = StringField('E-mail:', validators=[Email('Некорректный адрес')])
+    password = PasswordField('Пароль:')
+    check_password = PasswordField('Повторите пароль:',
+                                   validators=[EqualTo(fieldname='password', message='Пароли должны совпадать!')])
+    submit = SubmitField('Применить')
+
+
 class LoginForm(FlaskForm):
     email = StringField('E-mail:', validators=[DataRequired(), Email('Некорректный адрес')])
     password = PasswordField('Пароль:', validators=[DataRequired()])
