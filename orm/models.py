@@ -54,7 +54,7 @@ class Group(ORMBase):
         self.admin_id = admin_id
 
     def get_active_tasks(self):
-        return [task for task in self.tasks if task.status == 0]
+        return [task for task in self.tasks if task.status != 1]
 
 
 class Task(ORMBase):
@@ -67,7 +67,7 @@ class Task(ORMBase):
     group_id = Column(Integer, ForeignKey('groups.id'))
     priority = Column(Integer, nullable=False)  # 0 - high, 1 - medium, 2 - low
     description = Column(String, nullable=False)
-    status = Column(Integer, nullable=True, default=0)  # 0 - open, 1 - closed
+    status = Column(Integer, nullable=True, default=0)  # 0 - open, 1 - closed, 2 - waiting for check
     creation_time = Column(DateTime, nullable=False, default=datetime.datetime.now)
 
     author = orm.relation('User', foreign_keys=[author_id])

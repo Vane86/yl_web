@@ -98,7 +98,6 @@ def join_group_page():
         group.users.append(current_user)
         db_session.global_session.commit()
         return redirect('/private')
-    print(form.errors)
     return render_template('private_join_group.html', title='Присоединиться к группе', form=form)
 
 
@@ -108,7 +107,7 @@ def group_page(group_id):
     group = db_session.global_session.query(Group).filter(Group.id == group_id).first()
     if not group:
         abort(404)
-    return render_template('private_group.html', title=group.name, group=group, len=len)
+    return render_template('private_group.html', title=group.name, group=group, len=len, STATUS_TO_STR=forms.STATUS_TO_STR)
 
 
 @app.route('/group/<int:group_id>/create_task', methods=['GET', 'POST'])
@@ -118,7 +117,7 @@ def create_task_page(group_id):
     if not group:
         abort(404)
     form = forms.CreateTaskForm()
-    form.performer_id.choices = [(user.id, f'{user.name} (id: {user.id})') for user in group.users]
+    form.performer_id.choices = [(user.id, f'{user.name} (id: {user.id})') for user in group.users if user.id != current_user.id]
     if form.validate_on_submit():
         # TODO:
         # Check all possible inputs
@@ -126,7 +125,7 @@ def create_task_page(group_id):
                     group_id=group_id, priority=form.priority.data, description=form.description.data)
         db_session.global_session.add(task)
         db_session.global_session.commit()
-        return redirect('/private')
+        return redirect('/group/{{group_id}}')
     return render_template('private_create_edit_task.html', title='Создание задачи', group=group, form=form, edit=False)
 
 
@@ -137,7 +136,7 @@ def task_page(group_id, task_id):
     if not group or task_id not in set(task.id for task in group.tasks):
         abort(404)
     task = db_session.global_session.query(Task).filter(Task.id == task_id).first()
-    return render_template('private_task.html', title=f'Задача: {task.name}', group=group, task=task)
+    return render_template('private_task.html', title=f'Задача: {task.name}', group=group, task=task, STATUS_TO_STR=forms.STATUS_TO_STR)
 
 
 @app.route('/group/<int:group_id>/edit_task/<int:task_id>', methods=['GET', 'POST'])
@@ -151,7 +150,7 @@ def edit_task_page(group_id, task_id):
     if current_user.id != task.author_id:
         abort(403)
     form = forms.CreateTaskForm()
-    form.performer_id.choices = [(user.id, f'{user.name} (id: {user.id})') for user in group.users]
+    form.performer_id.choices = [(user.id, f'{user.name} (id: {user.id})') for user in group.users if user.id != current_user.id]
     if request.method == 'GET':
         form.name.data = task.name
         form.performer_id.data = task.performer_id
@@ -166,6 +165,22 @@ def edit_task_page(group_id, task_id):
         db_session.global_session.commit()
         return redirect(f'/group/{group_id}')
     return render_template('private_create_edit_task.html', title='Редактирование задачи', group=group, form=form, edit=True)
+
+
+@app.route('/group/<int:group_id>/finish_task/<int:task_id>')
+@login_required
+def finish_task(group_id, task_id):
+    group = db_session.global_session.query(Group).filter(Group.id == group_id).first()
+    if not group or task_id not in set(task.id for task in group.tasks):
+        abort(404)
+
+    task = db_session.global_session.query(Task).filter(Task.id == task_id).first()
+    if current_user.id != task.performer_id:
+        abort(403)
+
+    task.status = 2
+    db_session.global_session.commit()
+    return redirect(f'/group/{group_id}')
 
 
 app.run('localhost', 8080, debug=True)

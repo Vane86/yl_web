@@ -4,14 +4,15 @@
 
 <div class="row" style="margin: 10px">
     {% set active_tasks = group.get_active_tasks() %}
-    <div class="container col-9">
+    <div class="container col-md-9">
         <div class="row">
             {% for task in active_tasks %}
                 <div class="card-body bg-light col-md-3 border border-primary" style="border-radius: 5px; margin: 5px">
                     <h5 class="card-title">{{ task.name }}</h5>
                     <p class="card-text">
-                        Создатель: {{ task.author.name }} <br>
-                        Исполнитель: {% if group.performer_id == current_user.id %} Вы {% else %} {{ task.performer.name }} {% endif %} <br>
+                        Создатель: {% if task.author_id == current_user.id %} <span style="color: green"> Вы </span> {% else %} {{ task.author.name }} {% endif %} <br>
+                        Исполнитель: {% if task.performer_id == current_user.id %} <span style="color: red"> Вы </span> {% else %} {{ task.performer.name }} {% endif %} <br>
+                        Статус: {{STATUS_TO_STR[task.status]}} <br>
                         Дата создания: {{ task.creation_time.strftime('%d.%m.%y') }}
                     </p>
                     <a href="/group/{{ group.id }}/task/{{task.id}}" class="btn btn-primary">Детали</a>
@@ -31,7 +32,7 @@
         </div>
     </div>
 
-    <div class="container col-3">
+    <div class="container col-md-3">
         <div class="card bg-light">
             <div class="card-header">Участники</div>
             <div class="card-body">

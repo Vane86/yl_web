@@ -3,6 +3,9 @@ from wtforms import StringField, IntegerField, PasswordField, BooleanField, Sele
 from wtforms.validators import DataRequired, Email, EqualTo, NumberRange
 
 
+STATUS_TO_STR = ['На исполнении', 'Выполнено', 'Ждет проверки']
+
+
 class RegistrationForm(FlaskForm):
     name = StringField('Имя:', validators=[DataRequired()])
     email = StringField('E-mail:', validators=[DataRequired(), Email('Некорректный адрес')])
@@ -35,5 +38,5 @@ class CreateTaskForm(FlaskForm):
     performer_id = SelectField('Исполнитель:', coerce=int, validators=[DataRequired()])  # choices must be filled in creation time!
     priority = SelectField('Приоритет:', choices=[(0, 'Высокий'), (1, 'Средний'), (2, 'Низкий')], coerce=int, default=1)
     description = TextAreaField('Описание:', validators=[DataRequired()])
-    status = SelectField('Статус:', choices=[(0, 'Требует выполнения'), (1, 'Выполнено')], coerce=int, default=0)
+    status = SelectField('Статус:', choices=[(0, STATUS_TO_STR[0]), (1, STATUS_TO_STR[1]), (2, STATUS_TO_STR[2])], coerce=int, default=0)
     submit = SubmitField('Применить')

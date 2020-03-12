@@ -23,9 +23,9 @@
                 <h5 class="card-title">{{ group.name }} (ID: {{ group.id }})</h5>
                 <p class="card-text">
                     Пользователей: {{ len(group.users) }} <br>
-                    Задач: {{ len(group.tasks) }}
+                    Задач: {{ len(group.get_active_tasks()) }}
                     {% if group.admin_id == current_user.id %}
-                        <p>Вы являетесь администратором</p>
+                        <p style="color: green">Вы являетесь администратором</p>
                     {% endif %}
                 </p>
                 <a href="/group/{{ group.id }}" class="btn btn-primary">Войти</a>
