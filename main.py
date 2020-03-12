@@ -125,7 +125,7 @@ def create_task_page(group_id):
                     group_id=group_id, priority=form.priority.data, description=form.description.data)
         db_session.global_session.add(task)
         db_session.global_session.commit()
-        return redirect('/group/{{group_id}}')
+        return redirect(f'/group/{group_id}')
     return render_template('private_create_edit_task.html', title='Создание задачи', group=group, form=form, edit=False)
 
 
