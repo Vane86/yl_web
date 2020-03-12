@@ -202,4 +202,5 @@ def private_settings_page():
     return render_template('private_settings.html', title='Настройки', form=form)
 
 
-app.run('', 8080)
+if __name__ == '__main__':
+    app.run()
