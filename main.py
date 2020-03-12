@@ -202,4 +202,4 @@ def private_settings_page():
     return render_template('private_settings.html', title='Настройки', form=form)
 
 
-app.run('localhost', 8080, debug=True)
+app.run('', 8080)
